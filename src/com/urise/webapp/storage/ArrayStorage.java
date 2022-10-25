@@ -2,25 +2,32 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
+public class ArrayStorage extends AbstractArrayStorage {
+
+    private static final int STORAGE_LIMIT = 10000;
+
+    Resume[] storage = new Resume[STORAGE_LIMIT];
 
     int size = 0;
 
 
-    void clear() {
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
 
-        for (int i = 0; i < storage.length - 1; i++) {
-            storage[i] = null;
-        }
+
+        // for (int i = 0; i < storage.length - 1; i++) {
+          //  storage[i] = null;
+        //}
         size = 0;
     }
 
     public void update(Resume r) {
-        if (size <= 10000) {
+        if (size <= STORAGE_LIMIT) {
             int index = getIndex(r.getUuid());
             if (index == -1) {
                 System.out.println("Resume " + r.getUuid() + " is already exist");
@@ -41,7 +48,7 @@ public class ArrayStorage {
     }
     //}
 
-    void save(Resume r) {
+    public void save(Resume r) {
         int index = getIndex(r.getUuid());
         if (index != -1) {
             System.out.println("Resume " + r.getUuid() + " is already exist");
@@ -66,7 +73,7 @@ public class ArrayStorage {
         //}
     }
 
-    Resume get(String uuid) {
+    public Resume get(String uuid) {
         int index = getIndex(uuid);
             if (index == -1) {
                 System.out.println("Resume "+uuid+ " not exist");
@@ -80,7 +87,7 @@ public class ArrayStorage {
         //return null;
     //}
 
-    void delete(String uuid) {
+    public void delete(String uuid) {
         //if (uuid!=null) {
             int index = getIndex(uuid);
             if (index == -1) {
@@ -111,24 +118,22 @@ public class ArrayStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
-        Resume[] getAllStorage = new Resume[size];
-        for (int i =0; i< size; i++){
-            if (storage [i] != null){
-                getAllStorage[i]=storage[i];
-            }
-        }
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
+       // Resume[] getAllStorage = new Resume[size];
+       // for (int i =0; i< size; i++){
+          //  if (storage [i] != null){
+         //       getAllStorage[i]=storage[i];
+         //   }
+      //  }
 
-        return  getAllStorage;
+       // return  getAllStorage;
 
     }
 
-    int size() {
 
-        return size;
-    }
 
-    private int getIndex(String uuid) {
+    protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (uuid == storage[i].getUuid()) {
                 return i;
