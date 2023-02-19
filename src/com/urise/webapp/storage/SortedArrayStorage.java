@@ -3,20 +3,25 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage{
 
+  /*  private static class ResumeComparator implements Comparator<Resume>{
 
+        @Override
+        public int compare(Resume o1, Resume o2) {
+            return o1.getUuid().compareTo(o2.getUuid());
+        }
+    }*/
 
-
+    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
 
     protected void insertElement(Resume r, int index){
-        int insertInd = - index - 1;
-        System.arraycopy(storage, insertInd, storage, index, size-insertInd);
-        storage[insertInd]=r;
+        int insertIdx = -index - 1;
+        System.arraycopy(storage, insertIdx, storage, insertIdx + 1, size - insertIdx);
+        storage[insertIdx]=r;
     }
-
-
 
     protected void fillDeletedElement(int index){
        // for (int i = index; i<size-1; i++){
@@ -29,11 +34,11 @@ public class SortedArrayStorage extends AbstractArrayStorage{
 
     }
 
-
        @Override
-    protected int getIndex(String uuid) {
-        Resume searchKey = new Resume(uuid);
+    protected Integer getSearchKey(String uuid) {
+           Resume searchKey = new Resume(uuid, "dummy");
+           return Arrays.binarySearch(storage, 0, size, searchKey, RESUME_COMPARATOR);
+       }
 
-        return Arrays.binarySearch(storage, 0, size, searchKey);
-    }
 }
+
