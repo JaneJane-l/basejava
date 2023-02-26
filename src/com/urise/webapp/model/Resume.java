@@ -1,5 +1,7 @@
 package com.urise.webapp.model;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,6 +14,16 @@ public class Resume implements Comparable<Resume> {
     private final String uuid;
 
     private final String fullName;
+
+
+
+    private final Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+
+
+
+    private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
+
+
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "fullName must not be null");
@@ -26,6 +38,9 @@ public class Resume implements Comparable<Resume> {
         this.uuid = UUID.randomUUID().toString();
         this.fullName=fullName;
     }
+
+
+
 
 
     @Override
@@ -63,6 +78,16 @@ public class Resume implements Comparable<Resume> {
         return cmp != 0? cmp:uuid.compareTo(o.uuid);
 
     }
+
+    public String getContact(ContactType type) {
+        return contact.get(type);
+    }
+    public Section getSection(SectionType type) {
+        return sections.get(type);
+    }
+
+
+
 
 
 
