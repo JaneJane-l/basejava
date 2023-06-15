@@ -1,7 +1,12 @@
 package com.urise.webapp.model;
 
 import com.urise.webapp.util.DateUtil;
+import com.urise.webapp.util.LocalDateAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,9 +18,12 @@ import java.util.Objects;
 import static com.urise.webapp.util.DateUtil.NOW;
 import static com.urise.webapp.util.DateUtil.of;
 
+
+@XmlAccessorType(XmlAccessType.FIELD)
+
 public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final Link homePage;
+    private  Link homePage;
     private List<Position> positions = new ArrayList<>();
 
 
@@ -29,6 +37,8 @@ public class Organization implements Serializable {
         this.positions = positions;
     }
 
+    public Organization() {
+    }
 
     @Override
     public String toString() {
@@ -36,6 +46,14 @@ public class Organization implements Serializable {
                   homePage +
                   positions +
                 '}';
+    }
+
+    public Link getHomePage() {
+        return homePage;
+    }
+
+    public List<Position> getPositions() {
+        return positions;
     }
 
     @Override
@@ -53,13 +71,18 @@ public class Organization implements Serializable {
     }
 
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private  LocalDate startDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private  LocalDate endDate;
 
-        private final LocalDate startDate;
-        private final LocalDate endDate;
+        private  String title;
+        private  String description;
 
-        private final String title;
-        private final String description;
+        public Position() {
+        }
 
         public Position(int startYear, Month startMonth, String title, String description) {
             this(of(startYear, startMonth), NOW, title, description);
@@ -77,7 +100,7 @@ public class Organization implements Serializable {
             this.startDate = startDate;
             Objects.requireNonNull(title, "title must not be null");
             this.title = title;
-            this.description = description;
+            this.description = description== null?"":description;
 
         }
 
@@ -96,6 +119,8 @@ public class Organization implements Serializable {
         public String getDescription() {
             return description;
         }
+
+
 
         @Override
         public String toString() {

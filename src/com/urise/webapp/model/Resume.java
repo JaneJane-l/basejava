@@ -1,5 +1,8 @@
 package com.urise.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
@@ -9,23 +12,28 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
     private static final long serialVersionUID = 1L;
 
     // Unique identifier
-    private final String uuid;
+    private  String uuid;
 
-    private final String fullName;
+    private  String fullName;
 
 
 
-    private final Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
 
 
 
     private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
 
+    public Resume() {
+    }
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "fullName must not be null");
@@ -42,32 +50,28 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
 
-
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Resume)) return false;
-
         Resume resume = (Resume) o;
-
-        if (!getUuid().equals(resume.getUuid())) return false;
-        return fullName.equals(resume.fullName);
+        return Objects.equals(getUuid(), resume.getUuid()) && Objects.equals(fullName, resume.fullName) && Objects.equals(contacts, resume.contacts) && Objects.equals(sections, resume.sections);
     }
 
     @Override
     public int hashCode() {
-        int result = getUuid().hashCode();
-        result = 31 * result + fullName.hashCode();
-        return result;
+        return Objects.hash(getUuid(), fullName, contacts, sections);
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    
+    public String getFullName() {
+        return fullName;
+    }
+
+
 
     @Override
     public String toString() {
@@ -82,14 +86,21 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
     public String getContact(ContactType type) {
-        return contact.get(type);
+        return contacts.get(type);
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
     }
     public Section getSection(SectionType type) {
         return sections.get(type);
     }
+    public Map<SectionType, Section> getSection(){
+        return sections;
+    }
 
     public void addContact(ContactType type, String value) {
-       contact.put(type, value);
+       contacts.put(type, value);
     }
 
     public void addSection(SectionType type, Section section ) {
